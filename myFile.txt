@@ -1,0 +1,15 @@
+Software engineering is the systematic application
+of engineering approaches to the development of software.
+It applies core concepts from computer science
+and modern project management.
+
+Building quality software requires careful design,
+thorough verification, and continuous attention to details.
+Each component should have a clearly defined
+purpose and very reliable interfaces.
+
+This automated metrics analyzer inspects files to calculate
+the total number of lines, words, and paragraphs.
+It demonstrates robust text processing techniques
+and handles edge cases such as blank lines gracefully.
+Accurate statistics are essential for code.
