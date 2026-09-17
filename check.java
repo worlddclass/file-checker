@@ -8,7 +8,23 @@ public class check {
     private static final String DEFAULT_FILE_NAME = "myFile.txt";
 
     public static void main(String[] args) {
-        File file = new File(DEFAULT_FILE_NAME);
+        String fileName = (args != null && args.length > 0) ? args[0] : DEFAULT_FILE_NAME;
+        File file = new File(fileName);
+
+        if (!file.exists()) {
+            System.err.println("Error: File '" + fileName + "' not found.");
+            return;
+        }
+
+        if (file.isDirectory()) {
+            System.err.println("Error: '" + fileName + "' is a directory, not a file.");
+            return;
+        }
+
+        if (!file.canRead()) {
+            System.err.println("Error: File '" + fileName + "' cannot be read.");
+            return;
+        }
 
         int linesRead = 0;
         int wordCount = 0;
@@ -39,7 +55,7 @@ public class check {
                 }
             }
         } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
+            System.err.println("Error reading file '" + fileName + "': " + e.getMessage());
             return;
         }
 
@@ -55,9 +71,12 @@ public class check {
             }
         }
 
-        System.out.println("Lines: " + lineCount);
-        System.out.println("Words: " + wordCount);
-        System.out.println("Paragraphs: " + paragraphCount);
+        System.out.println("Analyzing file: " + fileName);
+        System.out.println("---------------------------------");
+        System.out.printf("%-13s%d%n", "Lines:", lineCount);
+        System.out.printf("%-13s%d%n", "Words:", wordCount);
+        System.out.printf("%-13s%d%n", "Paragraphs:", paragraphCount);
+        System.out.println("---------------------------------");
     }
 
     private static int countLineBreaks(File file) throws IOException {
