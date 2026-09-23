@@ -22,6 +22,7 @@ $testCases = @(
         ExpectedLines = 15
         ExpectedWords = 87
         ExpectedParagraphs = 3
+        ExpectedMama = 0
     },
     @{
         Name = "Empty File (0 bytes)"
@@ -29,6 +30,7 @@ $testCases = @(
         ExpectedLines = 0
         ExpectedWords = 0
         ExpectedParagraphs = 0
+        ExpectedMama = 0
     },
     @{
         Name = "Whitespace Only"
@@ -36,6 +38,7 @@ $testCases = @(
         ExpectedLines = 3
         ExpectedWords = 0
         ExpectedParagraphs = 0
+        ExpectedMama = 0
     },
     @{
         Name = "Single Line (No EOF Newline)"
@@ -43,6 +46,7 @@ $testCases = @(
         ExpectedLines = 1
         ExpectedWords = 8
         ExpectedParagraphs = 1
+        ExpectedMama = 0
     },
     @{
         Name = "Consecutive Blank Lines"
@@ -50,6 +54,15 @@ $testCases = @(
         ExpectedLines = 12
         ExpectedWords = 25
         ExpectedParagraphs = 3
+        ExpectedMama = 0
+    },
+    @{
+        Name = "Mama Word Occurrences"
+        File = "fixtures\mama_sample.txt"
+        ExpectedLines = 7
+        ExpectedWords = 36
+        ExpectedParagraphs = 2
+        ExpectedMama = 9
     }
 )
 
@@ -58,14 +71,16 @@ function Run-MetricsCheck($filePath) {
     $lines = $null
     $words = $null
     $paragraphs = $null
+    $mama = $null
 
     foreach ($line in ($output -split "`r?`n")) {
         if ($line -match "^Lines:\s+(\d+)") { $lines = [int]$matches[1] }
         if ($line -match "^Words:\s+(\d+)") { $words = [int]$matches[1] }
         if ($line -match "^Paragraphs:\s+(\d+)") { $paragraphs = [int]$matches[1] }
+        if ($line -match "^Mama:\s+(\d+)") { $mama = [int]$matches[1] }
     }
 
-    return @{ Lines = $lines; Words = $words; Paragraphs = $paragraphs }
+    return @{ Lines = $lines; Words = $words; Paragraphs = $paragraphs; Mama = $mama }
 }
 
 $allPassed = $true
@@ -81,14 +96,15 @@ foreach ($test in $testCases) {
     $linesOk = ($result.Lines -eq $test.ExpectedLines)
     $wordsOk = ($result.Words -eq $test.ExpectedWords)
     $paragraphsOk = ($result.Paragraphs -eq $test.ExpectedParagraphs)
+    $mamaOk = ($result.Mama -eq $test.ExpectedMama)
 
-    if ($linesOk -and $wordsOk -and $paragraphsOk) {
+    if ($linesOk -and $wordsOk -and $paragraphsOk -and $mamaOk) {
         Write-Host "PASS" -ForegroundColor Green
         $passedTests++
     } else {
         Write-Host "FAIL" -ForegroundColor Red
-        Write-Host "  Expected -> Lines: $($test.ExpectedLines), Words: $($test.ExpectedWords), Paragraphs: $($test.ExpectedParagraphs)" -ForegroundColor Red
-        Write-Host "  Got      -> Lines: $($result.Lines), Words: $($result.Words), Paragraphs: $($result.Paragraphs)" -ForegroundColor Red
+        Write-Host "  Expected -> Lines: $($test.ExpectedLines), Words: $($test.ExpectedWords), Paragraphs: $($test.ExpectedParagraphs), Mama: $($test.ExpectedMama)" -ForegroundColor Red
+        Write-Host "  Got      -> Lines: $($result.Lines), Words: $($result.Words), Paragraphs: $($result.Paragraphs), Mama: $($result.Mama)" -ForegroundColor Red
         $allPassed = $false
     }
 }

@@ -1,10 +1,11 @@
 # Requirements Document: File Metrics Checker
 
 ## 1. Overview
-The goal of this project is to develop a standalone Java program named `check.java` that analyzes a target text file named `myFile.txt` and calculates three primary metrics:
+The goal of this project is to develop a standalone Java program named `check.java` that analyzes a target text file named `myFile.txt` and calculates four primary metrics:
 1. **Total number of lines**
 2. **Total number of words**
 3. **Total number of paragraphs**
+4. **Total occurrences of the word "Mama"**
 
 The program will output these statistics in a clear, user-friendly format to standard output.
 
@@ -42,6 +43,13 @@ The program will output these statistics in a clear, user-friendly format to sta
   - Multiple consecutive blank lines are treated as a single paragraph boundary.
   - A file with only whitespace or no content contains 0 paragraphs.
 
+### 3.4 "Mama" Word Count
+- **Definition:** The total number of times the word "Mama" appears in the file.
+- **Details:**
+  - Case-insensitive matching (`Pattern.CASE_INSENSITIVE`), matching "Mama", "mama", and "MAMA".
+  - Uses regex word boundaries (`\bMama\b`) so occurrences surrounded by punctuation (such as `"Mama,"` or `(Mama)`) are counted accurately.
+  - Substrings within other words (such as `Grandmama` or `Mamacita`) do not count.
+
 ---
 
 ## 4. Input & Output Requirements
@@ -60,6 +68,7 @@ The program will output these statistics in a clear, user-friendly format to sta
   Lines:       15
   Words:       87
   Paragraphs:  3
+  Mama:        0
   ---------------------------------
   ```
 
