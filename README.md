@@ -4,6 +4,7 @@ A standalone Java tool that analyzes any specified text file (defaulting to `myF
 - Total **Lines**
 - Total **Words**
 - Total **Paragraphs**
+- Total occurrences of the word **"Mama"**
 
 ---
 
@@ -26,7 +27,8 @@ file-checker/
 │   ├── empty.txt
 │   ├── whitespace_only.txt
 │   ├── single_line.txt
-│   └── consecutive_blank_lines.txt
+│   ├── consecutive_blank_lines.txt
+│   └── mama_sample.txt
 └── verify.ps1             # Automated verification test suite
 ```
 

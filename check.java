@@ -3,9 +3,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class check {
     private static final String DEFAULT_FILE_NAME = "myFile.txt";
+    private static final Pattern MAMA_PATTERN = Pattern.compile("\\bMama\\b", Pattern.CASE_INSENSITIVE);
 
     public static void main(String[] args) {
         String fileName = (args != null && args.length > 0) ? args[0] : DEFAULT_FILE_NAME;
@@ -29,6 +32,7 @@ public class check {
         int linesRead = 0;
         int wordCount = 0;
         int paragraphCount = 0;
+        int mamaCount = 0;
         boolean inParagraph = false;
         boolean isFirstLine = true;
 
@@ -42,6 +46,11 @@ public class check {
                     isFirstLine = false;
                 }
                 linesRead++;
+                Matcher mamaMatcher = MAMA_PATTERN.matcher(line);
+                while (mamaMatcher.find()) {
+                    mamaCount++;
+                }
+
                 String trimmed = line.trim();
                 if (!trimmed.isEmpty()) {
                     String[] words = trimmed.split("\\s+");
@@ -76,6 +85,7 @@ public class check {
         System.out.printf("%-13s%d%n", "Lines:", lineCount);
         System.out.printf("%-13s%d%n", "Words:", wordCount);
         System.out.printf("%-13s%d%n", "Paragraphs:", paragraphCount);
+        System.out.printf("%-13s%d%n", "Mama:", mamaCount);
         System.out.println("---------------------------------");
     }
 
