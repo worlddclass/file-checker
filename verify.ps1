@@ -1,4 +1,4 @@
-# verify.ps1 - Automated Verification Suite for File Metrics Checker
+# verify.ps1 - Automated Verification Suite for File Metrics Checker (Menu Feature)
 
 Write-Host "========================================" -ForegroundColor Cyan
 Write-Host " Running Automated Verification Suite" -ForegroundColor Cyan
@@ -67,7 +67,7 @@ $testCases = @(
 )
 
 function Run-MetricsCheck($filePath) {
-    $output = cmd.exe /c "java check $filePath 2>&1"
+    $output = @('A', 'B', 'C', 'D', 'Q') | cmd.exe /c "java check $filePath 2>&1"
     $lines = $null
     $words = $null
     $paragraphs = $null
@@ -77,7 +77,7 @@ function Run-MetricsCheck($filePath) {
         if ($line -match "^Lines:\s+(\d+)") { $lines = [int]$matches[1] }
         if ($line -match "^Words:\s+(\d+)") { $words = [int]$matches[1] }
         if ($line -match "^Paragraphs:\s+(\d+)") { $paragraphs = [int]$matches[1] }
-        if ($line -match "^Mama:\s+(\d+)") { $mama = [int]$matches[1] }
+        if ($line -match "^(?:Occurrences of `"Mama`"|Mama):\s+(\d+)") { $mama = [int]$matches[1] }
     }
 
     return @{ Lines = $lines; Words = $words; Paragraphs = $paragraphs; Mama = $mama }
@@ -87,7 +87,7 @@ $allPassed = $true
 $totalTests = $testCases.Count
 $passedTests = 0
 
-Write-Host "`n[Step 2] Executing Test Cases..." -ForegroundColor Yellow
+Write-Host "`n[Step 2] Executing Metric Option Test Cases (A, B, C, D, Q)..." -ForegroundColor Yellow
 
 foreach ($test in $testCases) {
     Write-Host "Testing: $($test.Name)... " -NoNewline
@@ -119,6 +119,51 @@ if ($errString -match "Error: File 'non_existent_file_xyz.txt' not found") {
     $totalTests++
 } else {
     Write-Host "FAIL" -ForegroundColor Red
+    Write-Host "  Got -> $errString" -ForegroundColor Red
+    $allPassed = $false
+    $totalTests++
+}
+
+Write-Host "`n[Step 4] Interactive Menu Specific Tests..." -ForegroundColor Yellow
+
+# 4.1 Case Insensitivity (lowercase a, b, c, d, q)
+Write-Host "Testing lowercase input tolerance (a, b, c, d, q)... " -NoNewline
+$lowerOutput = @('a', 'b', 'c', 'd', 'q') | cmd.exe /c "java check fixtures\mama_sample.txt 2>&1"
+$lowerString = $lowerOutput -join "`n"
+if ($lowerString -match "Words:\s+36" -and $lowerString -match "Lines:\s+7" -and $lowerString -match "Paragraphs:\s+2" -and $lowerString -match "(?:Occurrences of `"Mama`"|Mama):\s+9" -and $lowerString -match "Goodbye!") {
+    Write-Host "PASS" -ForegroundColor Green
+    $passedTests++
+    $totalTests++
+} else {
+    Write-Host "FAIL" -ForegroundColor Red
+    $allPassed = $false
+    $totalTests++
+}
+
+# 4.2 Invalid Input Handling
+Write-Host "Testing invalid input handling (unknown option)... " -NoNewline
+$invalidOutput = @('invalid_option', 'Q') | cmd.exe /c "java check fixtures\mama_sample.txt 2>&1"
+$invalidString = $invalidOutput -join "`n"
+if ($invalidString -match "Invalid selection\. Please choose A, B, C, D, or Q\.") {
+    Write-Host "PASS" -ForegroundColor Green
+    $passedTests++
+    $totalTests++
+} else {
+    Write-Host "FAIL" -ForegroundColor Red
+    $allPassed = $false
+    $totalTests++
+}
+
+# 4.3 EOF Graceful Exit
+Write-Host "Testing graceful exit on EOF (no Quit command)... " -NoNewline
+$eofOutput = cmd.exe /c "echo. | java check fixtures\mama_sample.txt 2>&1"
+$eofExitCode = $LASTEXITCODE
+if ($eofExitCode -eq 0) {
+    Write-Host "PASS" -ForegroundColor Green
+    $passedTests++
+    $totalTests++
+} else {
+    Write-Host "FAIL (exit code $eofExitCode)" -ForegroundColor Red
     $allPassed = $false
     $totalTests++
 }

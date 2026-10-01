@@ -20,6 +20,7 @@ file-checker/
 ├── .gitignore             # Git ignore configuration for Java
 ├── README.md              # Project documentation and guide
 ├── requirements.md        # Formal specifications for line/word/paragraph metrics
+├── menu_requirements.md   # Specifications for interactive menu feature
 ├── delivery_plan.md       # Branch and Pull Request delivery plan
 ├── check.java             # Main Java source code
 ├── myFile.txt             # Primary benchmark sample input file
@@ -56,6 +57,14 @@ java check
 # Run against a custom file
 java check path/to/customFile.txt
 ```
+
+### Interactive Menu Options
+When launched, an interactive menu is displayed:
+- **A**: Show the amount of words in a file
+- **B**: Show the amount of lines in a file
+- **C**: Show the amount of paragraphs in a file
+- **D**: Show the amount of times the word "Mama" appears in a file
+- **Q**: Quit the program
 
 ---
 

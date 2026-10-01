@@ -108,8 +108,8 @@ Example outputs:
 ---
 
 ## 8. Verification & Acceptance Criteria
-- [ ] Code compiles without warnings (`javac check.java`).
-- [ ] Options `A`, `B`, `C`, `D`, and `Q` function as specified with case insensitivity.
-- [ ] Invalid selections display an error message and continue the loop.
-- [ ] Clean exit on `Q` / `q`.
-- [ ] Clean exit on EOF from `System.in`.
+- [x] Code compiles without warnings (`javac check.java`).
+- [x] Options `A`, `B`, `C`, `D`, and `Q` function as specified with case insensitivity.
+- [x] Invalid selections display an error message and continue the loop.
+- [x] Clean exit on `Q` / `q`.
+- [x] Clean exit on EOF from `System.in`.
